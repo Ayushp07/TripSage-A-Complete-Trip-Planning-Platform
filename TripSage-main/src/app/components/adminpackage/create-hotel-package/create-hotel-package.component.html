@@ -1,0 +1,159 @@
+<div class="admin-profile container">
+    <!-- Page Header Start -->
+    <div class="container-fluid page-header mb-5 p-0" style="background-image: url(assets/img/0f172b.png); border: 4px solid #fea116;">
+        <div class="container-fluid page-header-inner py-5">
+            <div class="container text-center pb-5">
+                <div class="d-flex justify-content-between align-items-center">
+                    <!-- Left Side: Profile Picture -->
+                    <div class="profile-pic" style="border: 2px solid #fea116; padding: 10px; border-radius: 50%;">
+                        <img src="assets/img/about-1.jpg" alt="Admin Profile Picture" class="rounded-circle" width="200" height="200">
+                    </div>
+
+                    <!-- Center: Admin Information -->
+                    <div class="admin-info" style="border: 2px solid #fea116; padding: 10px; border-radius: 10px; max-width: 400px;">
+                        <h1 class="text-white mb-3 animated slideInDown">Admin Profile</h1>
+                        <div class="profile-info" style="text-align: center;">
+                            <p style="color: #fea116;"><strong>Name:</strong> {{ name }}</p>
+                            <p style="color: #fea116;"><strong>Email:</strong> {{ email }}</p>
+                            <p style="color: #fea116;"><strong>Role:</strong> Administrator</p>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Application Logo -->
+                    <div class="app-logo" style="border: 2px solid #fea116; padding: 10px; border-radius: 10px;">
+                        <img src="assets/img/logo2.jpg" alt="Application Logo" width="250" height="100">
+                    </div>
+                </div>
+            </div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb justify-content-center text-uppercase" style="text-align: center;">
+                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                    <li class="breadcrumb-item"><a href="/adminprofile">Back to page</a></li>
+                    <li class="breadcrumb-item text-white active" aria-current="page"><a href="/aboutus">About</a></li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Page Header End -->
+
+   <!-- Add Package Buttons -->
+<div class="container text-center py-2">
+  <h1
+    class="display-5 mb-3 animated slideInDown"
+    style="color: #ffffff; background-color: #0f172b; border: 4px solid #fea116;"
+  >
+    Add Services To Your Trip
+  </h1>
+  <div class="button-group">
+    <button class="add-btn" (click)="toggleManualForm()" style="border: 2px solid #0f172b">
+      Add Manually
+    </button>
+    <button class="add-btn" (click)="toggleSearchForm()" style="border: 2px solid #fea116; margin-left: 10px;">
+      Search Hotel
+    </button>
+  </div>
+</div>
+
+<!-- Search Hotel Section -->
+<div *ngIf="showHotelSection && !manualFormVisible">
+  <div class="container-fluid page-header mb-5 p-0"
+    style="background-image: url(assets/img/room-1.jpg); background-size: cover; background-position: center;">
+    <div class="container-fluid page-header-inner py-3" style="background: rgba(0, 0, 0, 0.5);">
+      <div class="container text-center py-3">
+        <h1 class="display-3 text-white mb-3 animated slideInDown">Add Hotels</h1>
+      </div>
+    </div>
+  </div>
+
+  <section class="search-panel">
+    <!-- Hotel Form Inputs -->
+    <div class="input-group">
+      <label for="hotel-destination">Destination</label>
+      <input type="text" id="hotel-destination" placeholder="City or Hotel Name" [(ngModel)]="destination">
+    </div>
+    <div class="input-group">
+      <label for="checkin-date">Check-In Date</label>
+      <input type="date" id="checkin-date" [(ngModel)]="checkinDate">
+    </div>
+    <div class="input-group">
+      <label for="checkout-date">Check-Out Date</label>
+      <input type="date" id="checkout-date" [(ngModel)]="checkoutDate">
+    </div>
+    <div class="input-group">
+      <label for="guests">Guests</label>
+      <select id="guests" [(ngModel)]="guests">
+        <option *ngFor="let option of guestOptions" [value]="option">{{ option }}</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <label for="rooms">Rooms</label>
+      <select id="rooms" [(ngModel)]="rooms">
+        <option *ngFor="let option of roomOptions" [value]="option">{{ option }}</option>
+      </select>
+    </div>
+    <button class="search-btn" (click)="searchHotels()">Search Hotels</button>
+  </section>
+
+  <section class="hotel-results">
+    <!-- Hotel Results -->
+    <div *ngFor="let hotel of hotelResults" class="result">
+      <img [src]="hotel.image" alt="Hotel Image" class="hotel-image">
+      <div class="hotel-details">
+        <h3>{{ hotel.name }}</h3>
+        <p>Location: {{ hotel.location }}</p>
+        <p>Rating: {{ hotel.rating }}</p>
+        <p>Price: ${{ hotel.price }}/night</p>
+        <p>Amenities: {{ hotel.amenities }}</p>
+      </div>
+      <div class="actions">
+        <button class="book-btn" (click)="bookHotel(hotel)">Add To Package</button>
+      </div>
+    </div>
+  </section>
+</div>
+<!-- Manual Hotel Form Section -->
+<div *ngIf="manualFormVisible">
+  <div class="container-fluid page-header mb-5 p-0"
+    style="background-image: url(assets/img/room-1.jpg); background-size: cover; background-position: center;">
+    <div class="container-fluid page-header-inner py-3" style="background: rgba(0, 0, 0, 0.5);">
+      <div class="container text-center py-3">
+        <h1 class="display-3 text-white mb-3 animated slideInDown">Add Hotel</h1>
+      </div>
+    </div>
+  </div>
+
+  <form class="trip-form shadow p-4 rounded" (ngSubmit)="addHotel()" #hotelForm="ngForm">
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Hotel Name</label>
+        <input type="text" class="form-control" placeholder="e.g. The Leela Palace" [(ngModel)]="hotel.name" name="name" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Location</label>
+        <input type="text" class="form-control" placeholder="e.g. Bengaluru" [(ngModel)]="hotel.location" name="location" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Price</label>
+        <input type="text" class="form-control" placeholder="e.g. ₹20,000" [(ngModel)]="hotel.price" name="price" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Rating</label>
+        <input type="text" class="form-control" placeholder="e.g. ⭐️⭐️⭐️⭐️ | 4.8/5 Excellent" [(ngModel)]="hotel.rating" name="rating" required>
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">Amenities</label>
+        <input type="text" class="form-control" placeholder="e.g. Spa, Pool, Wi-Fi" [(ngModel)]="hotel.amenities" name="amenities">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label">Image URL</label>
+        <input type="text" class="form-control" placeholder="e.g. assets/img/hotel images/hotel1.jpg" [(ngModel)]="hotel.image" name="image" required>
+      </div>
+      <div class="col-12 text-center">
+        <button class="btn btn-primary px-5 py-2" type="submit">Add Hotel</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
